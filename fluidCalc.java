@@ -77,6 +77,7 @@ class fluidCalc {
         double p2old = nodes.get(0).get(0) - 5;
 
         for (int it = 0; it < 100; it++) {
+            
             nodes.get(1).set(0, p2old);
             flows = getflowrate(nodes, pipes);
             double sum = 0;
@@ -84,13 +85,19 @@ class fluidCalc {
                 sum += flows[i];
             }
             // guess new prssure based on previous assumed pressure and calculated flow
+
             double p2new = p2old * Math.pow((sum / Q), 0.2);
-            if (Math.abs(p2new - p2old) < 1e-7) {
+            if (p2new > nodes.get(0).get(0)) {
+                p2new = nodes.get(0).get(0) - Math.pow(p2new, 0.2);
+            }
+            if (Math.abs(p2new - p2old) < 1e-10) {
                 break;
             }
+
             p2old = p2new;
 
         }
+      
         return flows;
 
     }
